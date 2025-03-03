@@ -15,10 +15,10 @@ load_dotenv()
 # Configuration
 LOG_OUTPUT = "/tmp/monitor-ssh.log"
 LOCK_FILE = "/tmp/monitor-ssh.lock"
-SSH_LOG_FILE = "/var/log/auth.log"
 NTFY_URL = os.getenv("NTFY_URL", "https://ntfy.sh/topic")
 NTFY_TOKEN = os.getenv("NTFY_TOKEN")
 MONITOR_EVENTS = os.getenv("MONITOR_EVENTS", "all").split(",")
+SSH_LOG_FILE = os.getenv("SSH_LOG_FILE", "/var/log/auth.log")
 
 # Check if another instance is already running
 if os.path.exists(LOCK_FILE):

@@ -55,6 +55,62 @@ This script monitors SSH connection attempts (both successful and failed) from `
     python main.py
     ```
 
+## 🚀 Running with Docker
+
+You can run this SSH monitor inside a Docker container.
+
+### 🐳 Build the Docker image
+
+```sh
+docker build -t ssh-monitor .
+```
+
+### 📦 Run the container
+
+```sh
+docker run -d \
+  --name ssh-monitor \
+  --env NTFY_URL="https://ntfy.sh/topic" \
+  --env MONITOR_EVENTS="all" \
+  -v /var/log:/app/logs \
+  ssh-monitor
+```
+
+This will run the monitor in the background, using environment variables to configure notifications.
+
+## 📋 Using Docker Compose
+
+If you prefer `docker-compose`, create a `docker-compose.yml` file:
+
+```yaml
+version: '3.8'
+
+services:
+  ssh-monitor:
+    image: ssh-monitor
+    build: .
+    restart: unless-stopped
+    environment:
+      - NTFY_URL=https://ntfy.sh/topic
+      - MONITOR_EVENTS=all
+    volumes:
+      - /var/log:/app/logs
+```
+
+### ▶ Start the service
+
+```sh
+docker-compose up -d
+```
+
+### ⏹ Stop the service
+
+```sh
+docker-compose down
+```
+
+This setup ensures the container restarts automatically and keeps logs accessible.
+
 ### Optional: Run as a service
 
 You can configure the script to run as a service using `systemd` (on Linux systems):
