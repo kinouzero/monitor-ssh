@@ -19,14 +19,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN chmod +x /app/main.py
 
 # Expose the logs directory as a volume
-VOLUME ["/app/logs"]
+VOLUME ["/app/log"]
 
 # Set environment variables directly
 # These will be the defaults if not overridden
 ENV NTFY_TOPIC="https://ntfy.sh/topic"
-ENV NTFY_TOKEN=""
 ENV MONITOR_EVENTS="all"
-ENV SSH_LOG_FILE="/app/logs/auth.log"
+ENV SSH_LOG_FILE="/app/log/auth.log"
 
 # Command to run the script when the container starts
 CMD ["python", "/app/main.py"]

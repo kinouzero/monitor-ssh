@@ -38,9 +38,10 @@ This script monitors SSH connection attempts (both successful and failed) from `
 3. Create a `.env` file in the project directory. The file should contain the following environment variables:
 
     ```env
-    NTFY_URL=https://ntfy.sh/topic         # URL of the notification service (default is https://ntfy.sh/topic)
+    NTFY_URL=https://ntfy.sh/topic         # URL of the notification service (default: https://ntfy.sh/topic)
     NTFY_TOKEN=your_token_here            # Optional: Authentication token for the notification service
     MONITOR_EVENTS=all                    # Comma-separated list of events to monitor (choices: accepted, failed, disconnected, all)
+    SSH_LOG_FILE=your/log/path            # Optional: Path to your log (default: /var/log/auth.log)
     ```
 
     You can customize the `MONITOR_EVENTS` variable to choose which events to monitor:
@@ -72,7 +73,7 @@ docker run -d \
   --name ssh-monitor \
   --env NTFY_URL="https://ntfy.sh/topic" \
   --env MONITOR_EVENTS="all" \
-  -v /var/log:/app/logs \
+  -v /var/log:/app/log \
   ssh-monitor
 ```
 
@@ -94,7 +95,7 @@ services:
       - NTFY_URL=https://ntfy.sh/topic
       - MONITOR_EVENTS=all
     volumes:
-      - /var/log:/app/logs
+      - /var/log:/app/log
 ```
 
 ### ▶ Start the service
@@ -148,6 +149,7 @@ The following environment variables can be configured in the `.env` file:
 - **NTFY_URL**: The notification URL (default: `https://ntfy.sh/topic`).
 - **NTFY_TOKEN**: The optional authentication token for the notification service.
 - **MONITOR_EVENTS**: Comma-separated list of events to monitor (`accepted`, `failed`, `disconnected`, `all`). Default is `all`.
+- **SSH_LOG_FILE**: Path to your log file (default script: `/var/log/auth.log`, default docker: `/app/log/auth.log`).
 
 ### Example `.env` file
 
@@ -155,11 +157,12 @@ The following environment variables can be configured in the `.env` file:
 NTFY_URL=https://ntfy.sh/topic
 NTFY_TOKEN=your_token_here
 MONITOR_EVENTS=accepted,failed
+SSH_LOG_FILE=your/log/path
 ```
 
 ## Logging
 
-The script logs its activities to /tmp/monitor-ssh.log by default.
+The script logs its activities to `/tmp/monitor-ssh.log` by default.
 
 ## License
 

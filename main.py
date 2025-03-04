@@ -6,6 +6,7 @@ import logging
 import os
 import sys
 import signal
+import socket
 import subprocess
 from dotenv import load_dotenv
 
@@ -13,6 +14,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration
+HOSTNAME = socket.gethostname()
 LOG_OUTPUT = "/tmp/monitor-ssh.log"
 LOCK_FILE = "/tmp/monitor-ssh.lock"
 NTFY_URL = os.getenv("NTFY_URL", "https://ntfy.sh/topic")
@@ -87,7 +89,7 @@ def parse_log_line(line):
         match = re.search(r"sshd\[\d+\]: Accepted \w+ for (\S+) from (\S+)", line)
         if match:
             user, client_ip = match.groups()
-            send_notification("Successful SSH login", user, client_ip, "high", line)
+            send_notification("Successful SSH login on {HOSTNAME}", user, client_ip, "high", line)
             return
 
     # Failed connection (LOW PRIORITY)
@@ -95,7 +97,7 @@ def parse_log_line(line):
         match = re.search(r"sshd\[\d+\]: Failed \w+ for (\S+) from (\S+)", line)
         if match:
             user, client_ip = match.groups()
-            send_notification("Failed SSH login", user, client_ip, "min", line)
+            send_notification("Failed SSH login on {HOSTNAME}", user, client_ip, "min", line)
             return
 
     # Disconnection (NORMAL PRIORITY)
@@ -103,7 +105,7 @@ def parse_log_line(line):
         match = re.search(r"sshd\[\d+\]: Disconnected from authenticating user (\S+) (\S+)", line)
         if match:
             user, client_ip = match.groups()
-            send_notification("SSH disconnection", user, client_ip, "default", line)
+            send_notification("SSH disconnection on {HOSTNAME}", user, client_ip, "default", line)
             return
 
 # Main function: monitor the log file using tail -f
